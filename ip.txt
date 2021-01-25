@@ -1,0 +1,6 @@
+[namenode]
+15.206.89.106  ansible_ssh_user=ec2-user
+[datanode]
+35.154.67.173  ansible_ssh_user=ec2-user
+[clientnode]
+15.207.87.198 ansible_ssh_user=ec2-user

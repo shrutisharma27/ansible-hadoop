@@ -1,0 +1,46 @@
+- hosts: clientnode
+  vars:
+  - path: "/"
+  vars_prompt: 
+  - name: filename
+    prompt: "Enter your filename"
+    private: no
+  
+  - name: nn_ip
+    prompt: "enter namenode IP"
+    private: no
+
+  tasks:
+  - name: "transferring the jdk file"
+    copy:
+       src: /root/jdk-8u171-linux-x64.rpm
+       dest: /home/ec2-user
+
+
+  - name: "transferring the hadoop file"
+    copy:
+       src: /root/hadoop-1.2.1-1.x86_64.rpm
+       dest: /home/ec2-user
+
+  - name: "installing the jdk software"
+    package:
+        name: jdk-8u171-linux-x64.rpm
+        state: present
+
+
+  - name: "installing the hadoop software"
+    shell:  rpm -ivh hadoop-1.2.1-1.x86_64.rpm --force
+
+  - name: "configuring core-site.xml"
+    blockinfile:
+      path: /etc/hadoop/core-site.xml
+      insertafter: "<configuration>"
+      block:
+           <property>
+           <name>fs.default.name</name>
+           <value>hdfs://{{ nn_ip }}:9001</value>
+           </property>
+ 
+      
+  - name: Sending FIle...
+    shell: hadoop fs -put /home/ec2-user/{{ filename }} {{ path }}
